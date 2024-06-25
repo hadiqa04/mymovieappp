@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang = en>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Chilliks </title>
+        <style>
+
+            body{
+                display: flex;
+                justify-content: space-between;
+                background-image: url(img1.jpg);
+                margin: 0;
+                padding: 0;
+            }
+
+            #input1{
+                filter:drop-shadow(1);
+                background: inherit;
+                margin-top: 30%;
+                border-radius: 5px;
+                border: 1px solid white;
+                width: 85%;
+                height: 12%;
+            }
+
+            ::-webkit-input-placeholder{
+                color: white;
+            }
+
+            #btn1{
+                margin-top: 30%;
+                margin-left: 2%;
+                padding: 7px 15px 7px 15px;
+                height: 13%;
+                width:22%;
+                border: none;
+                border-radius: 5px;
+                background-color: orange;
+                color: white;
+            }
+
+            #div1{
+                display: flex;
+                justify-content: space-around;
+                justify-items: center;
+                margin-left: 35%;
+                margin-top: 13%;
+                height: 300px;
+                width: 400px;
+                }
+
+            #div2{
+                    margin-right: 2%;
+                    margin-top:5% ;
+                    max-height: 500px;
+                    overflow: auto;
+                    width: 90%;
+                    color: white;
+                    display: none;
+                }
+
+                movie {
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    background-color: #333;
+                    border-radius: 10px;
+                }
+
+                .movie img {
+                    border-radius: 10px;
+                }
+
+                .movie h3 {
+                    margin-bottom: 5px;
+                }
+
+                .movie p {
+                    margin-bottom: 5px;
+                    color: #ccc;
+                }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div id="div1">
+            <input id="input1" type="text" name="movieSearch" placeholder="Enter the title">
+            <button id="btn1">Search</button>
+        </div>
+        <div id="div2"></div>
+
+        <script> 
+            
+            const searchButton = document.getElementById('btn1');
+            searchButton.addEventListener('click', function(){
+            
+                const movieKey = "b64035a291c45ba2f4ebe08baa443c8d";
+                const movieInput = document.getElementById('input1');
+                const movie = movieInput.value;
+                const result = document.getElementById('div2');
+                result.style.display = 'none';
+            
+            fetch(`https://api.themoviedb.org/3/search/movie?query=${movie}&api_key=${movieKey}`)
+            .then((response) => response.json())
+            .then(data => {result.innerHTML='';
+            
+                if(data.results.length == 0){
+                    result.innerHTML = ('No results found');
+                }
+                else {
+                    data.results.forEach(movie => {
+                        const movieDiv = document.createElement('div');
+                        movieDiv.classList.add('movie');
+
+                        const posterElement = document.createElement('img');
+                        posterElement.textContent = `${movie.poster}`;
+                        if (movie.poster_path) {
+                                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                                const posterElement = document.createElement('img');
+                                posterElement.src = posterUrl;
+                                movieDiv.appendChild(posterElement);
+                            }
+
+                        const titleElement = document.createElement('h3');
+                        titleElement.textContent = movie.title;
+
+                        const releaseDateElement = document.createElement('p');
+                        releaseDateElement.textContent = `Release Date: ${movie.release_date}`;
+
+                        const overviewElement = document.createElement('p');
+                        overviewElement.textContent = movie.overview;
+
+                        movieDiv.appendChild(titleElement);
+                        movieDiv.appendChild(releaseDateElement);
+                        movieDiv.appendChild(overviewElement);
+                        result.appendChild(movieDiv);
+
+                    });
+                
+                }
+                result.style.display = 'block';
+
+                
+            })
+            const searchDiv = document.getElementById('div');
+                searchDiv.style.display = 'none';
+            })
+
+            .catch(error => console.log('Error', error));
+
+        </script>
+
+    </body>
+
+</html>
